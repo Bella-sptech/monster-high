@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Descubra seu Monstro</title>
+    <link rel="stylesheet" href="stylequiz.css">
+</head>
+<body>
+
+    <header>
+        <h1>Descubra qual monstro você é!</h1>
+        <p>Responda o quiz e veja qual personagem combina com você</p>
+    </header>
+
+    <img src="banner.jpg" alt="Monster High" class="banner">
+
+    <main>
+        <h2>Quiz</h2>
+
+        <form>
+
+            <div class="questões">
+                <p>1. Qual é sua personalidade?</p>
+                <label><input type="radio" name="qst1"> Extrovertida</label>
+                <label><input type="radio" name="qst1"> Misteriosa</label>
+                <label><input type="radio" name="qst1"> Inteligente</label>
+            </div>
+
+            <div class="questões">
+                <p>2. O que você prefere fazer?</p>
+                <label><input type="radio" name="qst2"> Sair com amigos</label>
+                <label><input type="radio" name="qst2"> Ficar em casa</label>
+                <label><input type="radio" name="qst2"> Estudar</label>
+            </div>
+
+            <div class="questões">
+                <p>3. Qual cor você mais gosta?</p>
+                <label><input type="radio" name="qst3"> Rosa</label>
+                <label><input type="radio" name="qst3"> Preto</label>
+                <label><input type="radio" name="qst3"> Azul</label>
+            </div>
+
+            <div class="questões">
+                <p>4. Como seus amigos te veem?</p>
+                <label><input type="radio" name="qst4"> Divertida</label>
+                <label><input type="radio" name="qst4"> Calma</label>
+                <label><input type="radio" name="qst4"> Responsável</label>
+            </div>
+
+            <div class="questões">
+                <p>5. Qual lugar você prefere?</p>
+                <label><input type="radio" name="qst5"> Festa</label>
+                <label><input type="radio" name="qst5"> Casa</label>
+                <label><input type="radio" name="qst5"> Escola</label>
+            </div>
+
+            <button type="button" onclick="mostrarResultado()">Ver Resultado</button>
+
+        </form>
+
+        <p id="resultado"></p>
+    </main>
+
+
+</body>
+</html>

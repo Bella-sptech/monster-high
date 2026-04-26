@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Arvo:ital@1&family=Bebas+Neue&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Playwrite+DK+Uloopet+Guides&display=swap');
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+}
+
+body {
+    background-color: #000;
+    background-size: cover;
+    background-image: 
+    url(fundo\ preto3.PNG)
+}
+
+.cabeçalho {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: auto;
+}
+
+.imagens-log {
+    height: 72px ;
+}
+
+.menu {
+    display: flex;
+    gap: 32px;
+}
+
+.menu-item {
+    font-family: "Bebas Neue", sans-serif;
+    color: white;
+    font-size: 20px;
+}
+
+
+.menu-item:hover {
+    color: #e6007e;
+}
+
+.botoes {
+    display: flex;
+    gap: 10px;
+    padding: 20px;
+}
+
+.botão-login {
+    font-family: 'Bebas Neue', sans-serif;
+    padding: 10px 25px;
+    font-size: 20px;
+    cursor: pointer;
+    text-transform: uppercase;
+    border-radius: 8px;
+    border: 2px solid #e6007e;
+    border-radius: 5px;
+    background: transparent;
+    color: white;
+}
+
+
+.botão-cadastro {
+    font-family: 'Bebas Neue', sans-serif;
+    padding: 10px 25px;
+    font-size: 20px;
+    cursor: pointer;
+    text-transform: uppercase;
+    border-radius: 8px;
+    border: 2px solid #e6007e;
+    background: #e6007e;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    gap: 5px;
+    
+    
+    
+}
+
+/* main*/
+.conteudo {}
+
+.conteudo-principal {
+    background-image:url(final.png);
+    background-repeat: no-repeat;  /* ISSO impede a duplicação */
+    background-size: 115% auto;        /* ISSO faz a imagem esticar para cobrir tudo sem repetir */
+    background-position: top center;     
+    min-height: 100vh;
+}
+.conteudo-principal-escrito {
+    padding-top: 200px;
+    padding-left: 50px;
+    gap: 20px; 
+}
+.conteudo-principal-escrito-titulo {
+    color: white; 
+    font-size: 80px; 
+    font-family: "Bebas Neue", sans-serif; 
+    text-shadow: 4px 4px 0px #000;
+    line-height: 0.9;
+    gap: 10px;
+    padding-bottom: 10px;;
+
+}
+.color {
+    color: #e6007e;
+}
+
+.conteudo-principal-escrito-subtitulo {
+    margin-top: 50px;
+    color: white;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size:15px ;
+}
+
+.botão-principal {
+    margin-top: 50px;
+    background-color: #e6007e; /* Rosa Monster High */
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    
+}
