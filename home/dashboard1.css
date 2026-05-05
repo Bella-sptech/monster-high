@@ -1,0 +1,326 @@
+@import url('https://fonts.googleapis.com/css2?family=Arvo:ital@1&family=Bebas+Neue&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Playwrite+DK+Uloopet+Guides&display=swap');
+
+@font-face {
+    font-family: 'Manrope';
+    src: url('./assets/fonts/Manrope/Manrope-VariableFont.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NotoSerif';
+    src: url('./assets/fonts/Noto_Serif/NotoSerif-VariableFont.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+body {
+    background-color: #747070;
+    background-image: url(fundo\ preto3.PNG);
+    color: #e6007e;
+    font-family: 'Bebas Neue', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    margin-top: 70px;
+    font-weight: 400;
+}
+
+h1,
+h2,
+h3 {
+    font-family: 'NotoSerif', serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.navbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 13px;
+
+    position: fixed;
+    top: 0;
+    height: 70px;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+
+    backdrop-filter: blur(10px);
+    box-sizing: border-box;
+    background-color: #000000; /* Fundo preto */
+    border-bottom: 4px solid #ff007f; /* Linha rosa choque embaixo */
+    box-shadow: 0px 4px 15px rgba(255, 0, 127, 0.5); /* Brilho rosa */
+
+}
+
+a {
+    text-decoration: none;
+    color: #2D0A31;
+}
+
+/*icons-header*/
+.logo {
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo img {
+    height: 100%;
+    width: auto;
+}
+
+
+/*main*/
+.main {
+    display: flex;
+    flex-wrap: nowrap;
+    min-height: calc(100vh - 70px);
+    align-items: flex-start;
+}
+
+/*todos os sidebar*/
+.sidebar {
+    width: 20%;
+    min-width: 220px;
+    min-height: calc(100vh - 70px);
+    background-color: #000000; /* Cinza quase preto */
+    border-right: 2px solid #ff007f; /* Divisória rosa */
+    
+}
+
+.sidebar h3 {
+    color: rgb(100, 4, 124);
+    font-size: 20px;
+    margin: 10px;
+}
+
+.sidebar a {
+    display: block;
+    text-decoration: none;
+    padding: 10px 15px;
+    color: antiquewhite; 
+}
+
+.sidebar a>svg {
+    color: rgb(57, 0, 83);
+}
+
+.sidebar a.sidebar-active {
+    border-left: 5px solid #e6007e;
+    background-color: #555;
+    color: #e6007e;
+    font-weight: bold;
+}
+
+.sidebar a.sidebar-active svg {
+    color: rgb(57, 0, 83);
+
+}
+
+.sidebar a:hover {
+    border-left: 5px solid #e6007e;
+    background-color: rgb(46, 44, 44);
+    color: #e6007e;
+    font-weight: bold;
+    
+}
+
+/*.sidebar a:hover .sidebar a > svg {
+    color: rgb(57, 0, 83);
+}*/
+
+
+
+
+
+
+.content {
+    flex: 1;
+    width: auto;
+    background-image: url(fundo\ preto3.PNG);
+    padding: 20px;
+}
+
+
+
+
+
+
+
+.logo {
+    margin-top: 15px;
+}
+
+.logo h3 {
+    cursor: pointer;
+}
+
+.logo h3:hover {
+    opacity: 0.7;
+}
+
+
+
+.titulo-sessão {
+    background-color: #000000;
+    padding: 10px;
+    border-radius: 10px;
+    border: 2px solid #e6007e;
+}
+
+.titulo-sessão h2 {
+    font-size: 40px;
+    font-family: 'Bebas Neue', sans-serif;
+    text-shadow: 2px 2px #000
+}
+
+.titulo-sessão p {
+    font-size: 14px;
+}
+
+.titulo-sessão i {
+    color: #e6007e;
+}
+
+/* se eu não gostar do meu hr e quise mudar no index , vou substiruir o hr por div class= "separador" div.
+e no css eu coloco: 
+.separador{
+width:100%;
+height: 1px;
+background-color: e a cor que eu quero , uma boa é a rgb(245,245,245) deixa quase invisivel}*/
+
+.box-info {
+    width: 100%;
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+
+}
+
+.box-info-single {
+    display: flex;
+    justify-content: space-between;
+    border-radius: 10px;
+    color: white;
+    padding: 30px;
+    width: calc(33.333% - 7px);
+    margin: 0;
+    align-items: center;
+    border: 2px solid;
+}
+
+.box-info-single svg {
+    font-size: 28px;
+    display: flex;
+
+}
+
+
+.feed {
+    margin: 10px 0;
+    width: 100%;
+    padding: 50px;
+    background-color: white;
+    border-radius: 10px;
+}
+
+.feed-single {
+    display: flex;
+    justify-content: space-between;
+}
+
+.feed-text span {
+    color: black;
+}
+
+/* se que quiser mudar meu icone de cor
+    width: 40px;
+    height: 40px;
+    border-radius: 20px ;
+    background-color: #73b4ff;
+    color: black;
+*/
+
+.feed-text svg {
+    font-size: 18px;
+    color: #73b4ff;
+    position: absolute;
+    left: 50%;
+
+}
+
+.feed-text .circle-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    background-color: cyan;
+    position: relative;
+
+}
+
+.feed-number {
+    color: #444;
+
+}
+
+
+.graficos {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+
+.caixa {
+
+    flex: 1 1 320px;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #E5E3D6;
+    border-radius: 20px;
+    font-family: 'Manrope', sans-serif;
+    color: black;
+
+}
+
+.caixaa {
+    flex: 1 1 320px;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    margin: 20px 0;
+    padding: 20px;
+    /*background-color: #E5E3D6;*/
+    border-radius: 20px;
+    font-family: 'Manrope', sans-serif;
+    /*color: black;*/
+    font-size: 20px;
+    background-color: #1a0020; /* Roxo bem escuro */
+    border: 3px solid #00ecff; /* Borda azul turquesa (Frankie Stein) */
+    color: #ffffff;
+    
+}
+
+.caixa canvas,
+.caixaa canvas {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+#meugrafico {
+    color: black;
+}
