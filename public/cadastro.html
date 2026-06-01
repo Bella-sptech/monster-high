@@ -1,0 +1,194 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="./css/cadastro.css">
+    <title>CADASTRO</title>
+</head>
+<body>
+    <!--botão de voltar-->
+    <div class=" voltar">
+    <a href="./index.html"><i class="fa-solid fa-angles-left"></i></a>
+\   </div>
+
+        <!--container é minha caixa -->
+    <main class="container">
+          <div class="alerta_erro">
+      <div class="card_erro" id="cardErro">
+        <span id="mensagem_erro"></span>
+      </div>
+    </div>
+        <h1><i class="fa-solid fa-skull-crossbones"></i>CADASTRO<i class="fa-solid fa-skull-crossbones"></i></h1>
+
+        <div class= "campo"> <!-- aqui são meus campos-->
+            <span>Nome:<i class="fa-solid fa-user"></i></span>
+            <input type="text" placeholder="Insira seu nome completo"  id="ipt_nome">
+        </div>
+        <div class="campo">
+            <span>Digite sua data de nascimento<i class="fa-solid fa-calendar-days"></i></span>
+            <input type="date"  id="ipt_data"> 
+        </div> 
+         <div class="campo">
+            <span>Digite seu email:<i class="fa-solid fa-at"></i></span>
+            <input type="text" placeholder="meuemail@provedor.com" id="ipt_email">
+        </div>
+        <div class="campo">
+            <span>Senha:<i class="fa-solid fa-lock"></i></span>
+            <input id="senha_input" type="password" placeholder="******" />
+          </div>
+        <div class="campo">
+            <span>Confirmação da Senha:<i class="fa-solid fa-lock"></i></span>
+            <input id="confirmacao_senha_input" type="password" placeholder="******" />
+          </div>
+
+      
+        <!--Botão de Cadastrar-->
+        <button onclick="cadastrar()" class="botao" type="submit">Cadastrar
+            <i class="fa-solid fa-spider"></i>
+        </button>
+
+        <!--aba para ir pro login-->
+        <div>
+          <br>
+            <p>Já tem conta?<a class="link" href="./login.html">Entrar</a></p>
+        </div>
+
+        <!--meu exibir, mas acho que vou usar alert-->
+        <div id="exibir"></div>
+
+        <!-- Acrescentar mais com logar com e os elementos -->
+    </main>
+</body>
+</html>
+<script>
+
+  // Array para armazenar empresas cadastradas para validação de código de ativação 
+
+  function cadastrar() {
+    // aguardar();
+
+    //Recupere o valor da nova input pelo nome do id
+    // Agora vá para o método fetch logo abaixo
+    var nomeU = ipt_nome.value;
+    var data_nascU = ipt_data.value;
+    var emailU = ipt_email.value;
+    var senhaU = senha_input.value;
+    var confir_senhaU =  confirmacao_senha_input.value;
+    
+
+    // Verificando se há algum campo em branco
+if (
+      emailU.trim() == "" ||
+      senhaU.trim() == "" ||
+      confir_senhaU.trim() == "" ||
+      nomeU.trim() == "" ||
+      data_nascU.trim() == ""
+    ) {
+      cardErro.style.display = "block";
+      mensagem_erro.innerHTML = "Não pode ter nenhum campo vazio";
+    
+      // finalizarAguardar(); // CORRIGIDO: Comentado para não dar erro
+      return false;
+    } 
+    
+    // Validações específicas 
+    if (!emailU.includes("@")) {
+        cardErro.style.display = "block";
+        mensagem_erro.innerHTML = "O email precisa ter @";
+        return false;
+    } else if (senhaU.length < 6) {
+        cardErro.style.display = "block";
+        mensagem_erro.innerHTML = "A senha deve tener 6 ou mais caracteres";
+        return false;
+    } else if (senhaU != confir_senhaU) { // CORRIGIDO: Comparação direta de igualdade
+        cardErro.style.display = "block";
+        mensagem_erro.innerHTML = "As senhas não são iguais";
+        return false;
+    } else {
+      setInterval(sumirMensagem, 5000);
+    }
+
+  
+   /* // Verificando se o código de ativação é de alguma empresa cadastrada
+    for (let i = 0; i < listaEmpresasCadastradas.length; i++) {
+      if (listaEmpresasCadastradas[i].codigo_ativacao == codigoVar) {
+        idEmpresaVincular = listaEmpresasCadastradas[i].id
+        console.log("Código de ativação válido.");
+        break;
+      } else {
+        cardErro.style.display = "block";
+        mensagem_erro.innerHTML = "(Mensagem de erro para código inválido)";
+        finalizarAguardar();
+      }
+    }*/
+
+    // Enviando o valor da nova input
+    fetch("/usuarios/cadastrar", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        // crie um atributo que recebe o valor recuperado aqui
+        // Agora vá para o arquivo routes/usuario.js
+        nomeServer: nomeU,
+        emailServer: emailU,
+        senhaServer: senhaU,
+        dataServer: data_nascU
+      }),
+    })
+      .then(function (resposta) {
+        console.log("resposta: ", resposta);
+
+        if (resposta.ok) {
+
+          mensagem_erro.innerHTML =
+            "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
+
+          setTimeout(() => {
+            window.location = "./login.html";
+          }, "2000");
+
+          limparFormulario();
+          //finalizarAguardar(); 
+        } else {
+          throw "Houve um erro ao tentar realizar o cadastro!";
+        }
+      })
+      .catch(function (resposta) {
+        console.log(`#ERRO: ${resposta}`);
+       // finalizarAguardar();
+      });
+
+    return false;
+  }
+
+  // Listando empresas cadastradas 
+//   function listar() {
+//     fetch("/empresas/listar", {
+//       method: "GET",
+//     })
+//       .then(function (resposta) {
+//         resposta.json().then((empresas) => {
+//           empresas.forEach((empresa) => {
+//             listaEmpresasCadastradas.push(empresa);
+
+//             console.log("listaEmpresasCadastradas")
+//             console.log(listaEmpresasCadastradas[0].codigo_ativacao)
+//           });
+//         });
+//       })
+//       .catch(function (resposta) {
+//         console.log(`#ERRO: ${resposta}`);
+//       });
+//   }
+
+  function sumirMensagem() {
+    cardErro.style.display = "none";
+  }
+</script>
+
+ 

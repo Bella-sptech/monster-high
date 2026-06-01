@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DashBoard Monter High</title>
+    <link rel="stylesheet" href="../css/dashboard1.css">
+    <script src="https://kit.fontawesome.com/a6f961102e.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="logo">
+            <img src="../assets/imgs/logomoster_high,sem fundo.png" alt="Monster-High logo">
+        </div>
+    </header>
+
+    <!-- FIM HEADER-->
+
+    <section class="main">
+        <div class="sidebar">
+            <a href="../index.html"><i class="fa-solid fa-house"></i>Home</a>
+            <a href="../QUIZ/quiz.html">QUIZ</a>
+            <br>
+            <hr>
+
+        <div class="personagens-sidebar">
+            <img src="../assets/imgs/todas_as_monstrinhas.png" alt="">
+        </div>
+            <!-- se eu quiser adicionar mais "abas" só eu duplicar -->
+        </div><!-- sidebar-->
+
+        <div class="content">
+            <div class="titulo-sessão">
+                <h2>Dashboard</h2>
+                <hr>
+                <br>
+                <p><i class="fa-solid fa-house"></i>/Dashboard Monster-High</p>
+            </div>
+
+            <!-- ===== KPIs ===== -->
+            <!-- Cada card mostra uma informação diferente do usuário logado -->
+            <div class="box-info">
+
+                <!-- CARD VERMELHO: mostra o personagem menos votado pelo usuário no último quiz -->
+                <!-- O id="kpi-vermelho" é usado pelo JavaScript para preencher esse card -->
+                <div style="background-color: rgba(216, 13, 13, 0.459); border-color: red; color: #7A1A1A;"
+                    class="box-info-single" id="kpi-vermelho">
+                    <div class="info-text">
+                        <!-- Começa com "Carregando..." e o JS substitui quando a resposta chegar -->
+                        <p>Carregando...</p>
+                    </div>
+                </div>
+
+                <!-- CARD AMARELO: mostra quantas vezes o usuário já fez o quiz -->
+                <!-- O id="kpi-amarelo" é usado pelo JavaScript para preencher esse card -->
+                <div style="background-color: rgba(255, 238, 0, 0.301); border-color: yellow; color: #5A4A00"
+                    class="box-info-single" id="kpi-amarelo">
+                    <div class="info-text">
+                        <!-- Começa com "Carregando..." e o JS substitui quando a resposta chegar -->
+                        <p>Carregando...</p>
+                    </div>
+                </div>
+
+                <!-- CARD VERDE: mostra o resultado mais recente do quiz do usuário -->
+                <!-- O id="resultado-quiz" é usado pelo JavaScript para preencher esse card -->
+                <div style="background-color: rgba(20, 252, 32, 0.658); border-color: green; color: #1A4d1A;"
+                    class="box-info-single" id="resultado-quiz">
+                    <div class="info-text">
+                        <!-- Começa com "Carregando..." e o JS substitui quando a resposta chegar -->
+                        <p>Carregando resultado...</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ===== GRÁFICO ===== -->
+            <div class="graficos">
+                <div class="caixaa">
+                    <center>
+                        <h2>Qual tipo de monstro é mais comum entre os usuários?</h2>
+                        <h1 id="ipt_filtro2"></h1>
+                    </center>
+                    <!-- O canvas é onde o Chart.js desenha o gráfico -->
+                    <canvas id="meugraficobarras"></canvas>
+                </div>
+            </div>
+
+        </div><!--content -->
+    </section> <!--main-->
+
+</body>
+
+</html>
+<script>
+
+    // ============================================================
+    // CARD VERDE: busca o último resultado do quiz do usuário
+    // Chama a rota GET /resultadoquiz/buscar/:idUsuario no backend
+    // ============================================================
+    async function carregarResultadoQuiz() {
+
+        // Pega o ID do usuário que foi salvo no localStorage durante o login
+        let idUsuario = localStorage.getItem("idUsuario");
+
+        // Se não tiver usuário logado, mostra mensagem e para aqui
+        if (!idUsuario) {
+            document.getElementById("resultado-quiz").innerHTML = `
+                <div class="info-text"><p>Faça login para ver seu resultado.</p></div>`;
+            return;
+        }
+
+        try {
+            // Faz a requisição para o backend passando o ID do usuário na URL
+            let resposta = await fetch(`/resultadoquiz/buscar/${idUsuario}`);
+
+            // Status 204 significa que o servidor respondeu mas não encontrou nada
+            if (resposta.status === 204) {
+                document.getElementById("resultado-quiz").innerHTML = `
+                    <div class="info-text"><p>Você ainda não fez o quiz!</p></div>`;
+                return;
+            }
+
+            // Converte a resposta para JSON para poder usar os dados
+            let dados = await resposta.json();
+
+            // Preenche o card verde com os dados que vieram do banco
+            document.getElementById("resultado-quiz").innerHTML = `
+                <div class="info-text">
+                    <h3>${dados.nomPersonagem}</h3>
+                    <p>Pontuação: ${dados.porcentagemFinal} acertos</p>
+                    <p>Data: ${new Date(dados.dataResultado).toLocaleDateString('pt-BR')}</p>
+                </div>
+            `;
+        } catch (erro) {
+            console.error("Erro ao buscar resultado:", erro);
+            document.getElementById("resultado-quiz").innerHTML = `
+                <div class="info-text"><p>Erro ao carregar resultado.</p></div>`;
+        }
+    }
+
+    // Chama a função assim que a página carrega
+    carregarResultadoQuiz();
+
+
+    // ============================================================
+    // CARD AMARELO: conta quantas vezes o usuário fez o quiz
+    // Chama a rota GET /resultadoquiz/contar/:idUsuario no backend
+    // ============================================================
+    async function carregarContagem() {
+
+        // Pega o ID do usuário que foi salvo no localStorage durante o login
+        let idUsuario = localStorage.getItem("idUsuario");
+
+        // Se não tiver usuário logado, mostra mensagem e para aqui
+        if (!idUsuario) {
+            document.getElementById("kpi-amarelo").innerHTML = `
+                <div class="info-text"><p>Faça login.</p></div>`;
+            return;
+        }
+
+        try {
+            // Faz a requisição para o backend passando o ID do usuário na URL
+            let resposta = await fetch(`/resultadoquiz/contar/${idUsuario}`);
+
+            // Converte a resposta para JSON
+            let dados = await resposta.json();
+
+            // Preenche o card amarelo com o total de vezes que fez o quiz
+            document.getElementById("kpi-amarelo").innerHTML = `
+                <div class="info-text">
+                    <h3>${dados.total}x</h3>
+                    <p>Vezes que fez o quiz</p>
+                </div>
+            `;
+        } catch (erro) {
+            console.error("Erro ao contar resultados:", erro);
+            document.getElementById("kpi-amarelo").innerHTML = `
+                <div class="info-text"><p>Erro ao carregar.</p></div>`;
+        }
+    }
+
+    // Chama a função assim que a página carrega
+    carregarContagem();
+
+
+    // ============================================================
+    // CARD VERMELHO: busca o placar completo e mostra a personagem menos votada
+    // Chama a rota GET /placarquiz/buscar/:idUsuario no backend
+    // ============================================================
+    async function carregarPerdedora() {
+
+        // Pega o ID do usuário que foi salvo no localStorage durante o login
+        let idUsuario = localStorage.getItem("idUsuario");
+
+        // Se não tiver usuário logado, mostra mensagem e para aqui
+        if (!idUsuario) {
+            document.getElementById("kpi-vermelho").innerHTML = `
+                <div class="info-text"><p>Faça login.</p></div>`;
+            return;
+        }
+
+        try {
+            // Faz a requisição para o backend passando o ID do usuário na URL
+            let resposta = await fetch(`/placarquiz/buscar/${idUsuario}`);
+
+            // Status 204 significa que não encontrou placar para esse usuário
+            if (resposta.status === 204) {
+                document.getElementById("kpi-vermelho").innerHTML = `
+                    <div class="info-text"><p>Faça o quiz primeiro!</p></div>`;
+                return;
+            }
+
+            // Converte a resposta para JSON
+            let dados = await resposta.json();
+
+            // Monta um array com os votos de cada personagem
+            // para poder comparar e achar quem teve menos votos
+            let placar = [
+                { nome: "Frankie Stein",  votos: dados.votosFrankie    },
+                { nome: "Draculaura",     votos: dados.votosDraculaura },
+                { nome: "Clawdeen Wolf",  votos: dados.votosClawdeen   },
+                { nome: "Cleo de Nile",   votos: dados.votosCleo       },
+                { nome: "Lagoona Blue",   votos: dados.votosLagoona    },
+                { nome: "Ghoulia Yelps",  votos: dados.votosGhoulia    }
+            ];
+
+            // Começa achando que a primeira (Frankie) tem menos votos
+            // e vai comparando com as outras — se alguma tiver menos, ela vira a perdedora
+            let perdedora = placar[0];
+            for (let i = 1; i < placar.length; i++) {
+                if (placar[i].votos < perdedora.votos) {
+                    perdedora = placar[i];
+                }
+            }
+
+            // Preenche o card vermelho com a personagem menos votada
+            document.getElementById("kpi-vermelho").innerHTML = `
+                <div class="info-text">
+                    <h3>${perdedora.nome}</h3>
+                    <p>Menos escolhida: ${perdedora.votos} votos</p>
+                </div>
+            `;
+
+        } catch (erro) {
+            console.error("Erro ao buscar placar:", erro);
+            document.getElementById("kpi-vermelho").innerHTML = `
+                <div class="info-text"><p>Erro ao carregar.</p></div>`;
+        }
+    }
+
+    // Chama a função assim que a página carrega
+    carregarPerdedora();
+
+
+    // ============================================================
+    // GRÁFICO DE BARRAS
+    // Por enquanto com dados fixos — futuramente virá do banco
+    // ============================================================
+
+    // Pega o elemento canvas onde o gráfico vai ser desenhado
+   // ============================================================
+// GRÁFICO DE BARRAS: mostra os votos de cada personagem
+// Usa os mesmos dados do placar que já buscamos antes
+// Chama a rota GET /placarquiz/buscar/:idUsuario no backend
+// ============================================================
+async function carregarGrafico() {
+    try {
+        let idUsuario = localStorage.getItem("idUsuario");
+
+        if (!idUsuario) return;
+
+        let resposta = await fetch(`/placarquiz/buscar/${idUsuario}`);
+
+        if (resposta.status === 204) return;
+
+        let dados = await resposta.json();
+
+        let barra = document.getElementById("meugraficobarras");
+
+        new Chart(barra, {
+            type: 'bar',
+            data: {
+                labels: ['Frankie', 'Draculaura', 'Clawdeen', 'Cleo', 'Lagoona', 'Ghoulia'],
+                datasets: [{
+                    backgroundColor: '#00ecff',
+                    label: 'Votos',
+                    data: [
+                        dados.votosFrankie,
+                        dados.votosDraculaura,
+                        dados.votosClawdeen,
+                        dados.votosCleo,
+                        dados.votosLagoona,
+                        dados.votosGhoulia
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                color: 'white',
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+    } catch (erro) {
+        // Mostra o erro exato no console para debug
+        console.error("Erro ao carregar gráfico:", erro);
+    }
+}
+
+carregarGrafico();
+</script>

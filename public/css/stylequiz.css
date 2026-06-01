@@ -1,0 +1,141 @@
+
+
+/* Importando uma fonte mais estilizada para o tema */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Arvo:ital@1&family=Bebas+Neue&family=Changa+One:ital@0;1&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Playwrite+DK+Uloopet+Guides&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+body {
+    background-color: #0d0d0d; /* Fundo quase preto para destacar o rosa */
+    color: white;
+    font-family:' Bebas Neue', sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.cabeçalho {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: auto;
+}
+
+.imagens-log {
+    height: 72px ;
+}
+
+.menu {
+    display: flex;
+    gap: 32px;
+}
+
+.menu-item {
+    font-family: "Bebas Neue", sans-serif;
+    color: white;
+    font-size: 20px;
+}
+
+
+.menu-item:hover {
+    color: #e6007e;
+    transform: scale(1.2); 
+}
+
+/* CONTAINER PRINCIPAL */
+.quiz-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    padding: 20px;
+    /* Adicionando a imagem de fundo que você comentou antes */
+    background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url("../assets/imgs/fundo\ preto3.PNG");
+    background-size: cover;
+}
+
+/* A CAIXA DO QUIZ */
+.quiz-box {
+    background-color: rgba(20, 20, 20, 0.9); /* Fundo escuro levemente transparente */
+    border: 2px solid #e6007e; /* Rosa choque da Monster High */
+    border-radius: 20px;
+    padding: 40px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 0 20px rgba(230, 0, 126, 0.3); /* Brilho rosa em volta */
+    text-align: left;
+}
+
+/* TEXTOS */
+#pergunta h3 {
+    color: #e6007e;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+#descricao p {
+    color: #cccccc;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+/* OPÇÕES (RADIO BUTTONS) */
+#opcoes {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Estilizando a linha da opção */
+#opcoes label {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #444;
+    padding: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    display: block;
+}
+
+#opcoes label:hover {
+    background: rgba(230, 0, 126, 0.1);
+    border-color: #e6007e;
+}
+
+/* BOTÕES */
+button {
+    background-color: #e6007e;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    margin-top: 30px;
+    transition: 0.3s;
+    float: right; /* Alinha o botão à direita como na imagem */
+}
+
+button:hover {
+    background-color: #ff008c;
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #e6007e;
+}
+
+#btnReiniciar {
+    background-color: #444;
+    float: none; /* Centraliza se precisar reiniciar */
+}
+
+/* RESULTADO FINAL */
+.resultado {
+    font-size: 18px;
+    line-height: 1.6;
+    margin-top: 20px;
+    color: #ff85c2;
+    border-top: 1px solid #444;
+    padding-top: 20px;
+}

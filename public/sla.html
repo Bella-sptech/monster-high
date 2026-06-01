@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="./css/login.css">
+    <title>LOGIN</title>
+</head>
+<body>
+    <!--botão de voltar-->
+    <div class=" voltar">
+    <a href="./index.html"><i class="fa-solid fa-angles-left"></i></a>
+    <a href="./QUIZ/quiz.htmlM"></a>
+\   </div>
+
+        <!--container é minha caixa -->
+     <div class="alerta_erro">
+            <div class="card_erro" id="cardErro">
+                <span id="mensagem_erro"></span>
+            </div>
+        </div>
+    <main class="container">
+        <h1><i class="fa-solid fa-skull-crossbones"></i>Login<i class="fa-solid fa-skull-crossbones"></i></h1>
+        <div class= "input-box"> <!-- aqui são meus campos-->
+            <span>Digite seu email<i class="fa-solid fa-user"></i></span>
+            <input placeholder="Usuário" type="email" id="ipt_email">
+        </div>
+        <div class="input-box">
+            <span>Digite sua senha<i class="fa-solid fa-lock"></i></span>
+            <input placeholder="senha" type="password" id="ipt_senha">
+        </div>
+
+        <!-- lembrar é meu label-->
+        <div class="lembrar">
+             <label>
+                <input type="checkbox">Lembrar minha senha
+            </label>
+        </div>
+        <!--Botão de Entrar-->
+        <button onclick="entrar()" class="botao" type="submit">Entrar
+            <i class="fa-solid fa-spider"></i>
+        </button>
+
+        <!--abas , são meus links comuns de login-->
+        <div class="abas">
+            <a class="link" href="#">Esqueci minha senha</a>
+        </div>
+        <br>
+        <div>
+            <p>Não tem conta?<a class="link" href="./cadastro.html">Cadastre-se</a></p>
+        </div>
+
+        <!--meu exibir, mas acho que vou usar alert-->
+        <div id="exibir"></div>
+
+        <!-- Acrescentar mais com logar com e os elementos -->
+    </main>
+</body>
+</html>
+<script>
+
+      function entrar() {
+       // aguardar();
+
+        var emailU = ipt_email.value;
+        var senhaU = ipt_senha.value;
+
+        if (emailU == "" || senhaU == "") {
+            cardErro.style.display = "block"
+            mensagem_erro.innerHTML = "(Mensagem de erro para todos os campos em branco)";
+           // finalizarAguardar();
+            return false;
+        }
+        else {
+            setInterval(sumirMensagem, 5000)
+        }
+
+        console.log("FORM LOGIN: ", emailU);
+        console.log("FORM SENHA: ", senhaU);
+
+        fetch("/usuarios/autenticar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                emailServer: emailU,
+                senhaServer: senhaU
+            })
+        }).then(function (resposta) {
+            console.log("ESTOU NO THEN DO entrar()!")
+
+            if (resposta.ok) {
+                console.log(resposta);
+
+                resposta.json().then(json => {
+                    console.log(json);
+                    console.log(JSON.stringify(json));
+                    sessionStorage.EMAIL_USUARIO = json.email;
+                    sessionStorage.NOME_USUARIO = json.nome;
+                    localStorage.setItem("idUsuario", json.idUsuario);
+                    // sessionStorage.AQUARIOS = JSON.stringify(json.aquarios)
+                    
+                                resposta.json().then(json => {
+                    console.log(json);
+                    
+                    // O resultado vem como array, então pega o primeiro item
+                    let usuario = json[0];
+                    
+                    sessionStorage.EMAIL_USUARIO = usuario.email;
+                    sessionStorage.NOME_USUARIO  = usuario.nome;
+                    
+                    // Salva no localStorage com a chave que o quiz espera
+                    localStorage.setItem("idUsuario", usuario.idUsuario);
+
+                    setTimeout(function () {
+                        window.location = "./QUIZ/quiz.html";
+                    }, 1000);
+                });
+                });
+
+            } else {
+
+                console.log("Houve um erro ao tentar realizar o login!");
+
+                resposta.text().then(texto => {
+                    console.error(texto);
+                 //   finalizarAguardar(texto);
+                });
+            }
+
+        }).catch(function (erro) {
+            console.log(erro);
+        })
+
+        return false;
+    }
+
+    function sumirMensagem() {
+        cardErro.style.display = "none"
+    }
+
+</script>

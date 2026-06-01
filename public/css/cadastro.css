@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Arvo:ital@1&family=Bebas+Neue&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Playwrite+DK+Uloopet+Guides&display=swap');
+
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-image: url("../assets/imgs/fundo\ preto3.PNG");
+    background-size: cover;
+    background-position: center;
+}   
+
+/*editando a minha caixa do login*/
+.container{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 420px;
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    border-color: #e6007e;
+    color: rgb(229, 132, 215);
+    padding: 30px 40px;
+    box-shadow: 0 0 30px #e6007e;
+}
+/*editando o titulo da caixa*/
+.container h1{
+    text-align: center;
+    color: antiquewhite;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 50px;
+}
+
+/*editando as caixas de texto*/
+.campo {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    margin: 15px 0;
+}
+/*editando dentro das caixas de dentro*/
+.campo input{
+    color: antiquewhite;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border-radius: 10px;     
+    border: 3px solid #e6007e;
+    outline: none;
+    font-size: 16px;   
+    padding: 10px 20px 10px 20px;    
+}
+
+/*editando o lembrar*/
+.lembrar{
+    margin-top: 10px;;
+}
+
+/*editando as abas que vão ser puxadas*/
+.abas{
+    margin-top: 10px;
+}
+
+/*editando o que vai puxar*/
+.link{
+    color: #e6007e;
+}
+
+/*editanado o botão de entrar*/
+.botao{
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+
+    background-color: #e6007e;
+    border-radius: 10px;
+    border-color: #ff008c;
+    padding: 8px 50px 8px 50px;
+
+    color: antiquewhite;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 25px;
+}
+
+/*editando os icones*/
+.fa-solid{
+    margin: 0 10px;
+}
+
+/*botão de voltar*/
+.voltar{
+    font-size: 50px;
+    position: fixed;
+    top: 0;         /* Cola no topo */
+    left: 0;        /* Cola na esquerda */
+    width: 100%;    /* Faz ele ocupar toda a largura */
+    z-index: 1000;
+}
+/*editando o icone de voltar*/
+.fa-angles-left{
+    color: #e6007e;
+}
+
+.alerta_erro{
+  display: flex;
+  justify-content: flex-end;
+}
+
+.card_erro {
+  display: none;
+  background-color: #fff;
+  color: black;
+  width: 230px;
+  position: fixed;
+  border-radius: 4px;
+  border: #ED145B 3px solid;
+  padding: 10px;
+  margin-right: 10%;
+}
+
+.card_erro #mensagem_erro{
+  font-weight: 500;
+  font-size: 20px;
+}

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Monster high| Quiz</title>
+
+<link rel="stylesheet" href="../css/stylequiz.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <img class="imagens-log" src="../assets/imgs/logomoster_high,sem fundo.png" alt="">
+        <nav class="menu">
+            <a class="menu-item" href="../index.html">Início</a>
+            <a class="menu-item" href="../dashboard/dashboard1.html"> Dashboard</a>
+            <a class="menu-item" href="../DIÁRIO/diario.html"> Diário</a>
+        </nav>
+    </header>
+
+<div class="quiz-container">
+    <div class="quiz-box">
+
+        <div id="pergunta"></div>
+        <div id="descricao"></div>
+        <div id="opcoes"></div>
+
+        <button id="btnProx" onclick="proxima()">PRÓXIMA</button>
+        <button id="btnReiniciar" onclick="reiniciar()" style="display:none;">REINICIAR</button>
+
+        <div id="resultado" class="resultado"></div>
+
+    </div>
+</div>
+
+    <footer>
+        <div class="rodape">
+            <h2 class="titulo-rodape">Monster-High</h2>
+            <p class="frase-rodape">
+                "SEJA VOCÊ , SEJÁ UM MONSTRO."
+            </p>
+            <img class="imagens-log" src="../assets/imgs/logomoster_high,sem fundo.png" alt=""> 
+        </div>
+    </footer>
+
+<script>
+
+// ============================================================
+// DADOS DOS PERSONAGENS
+// Cada personagem tem: nome, motivo (texto do resultado),
+// imagem (caminho da foto) e id (igual ao id no banco de dados)
+// ============================================================
+const personagensInfo = [
+    { 
+        nome: "Frankie Stein", 
+        motivo: "Você é movida pela energia e pela coragem de tentar. Não tem medo de errar — aprende fazendo e entra de cabeça em tudo com o coração aberto.", 
+        imagem: "../assets/imgs/frankie.png", 
+        id: 1 
+    },
+    { 
+        nome: "Draculaura", 
+        motivo: "Você ama com intensidade e coloca as pessoas que importam em primeiro lugar. Sua sensibilidade não é fraqueza — é a sua maior força.", 
+        imagem: "../assets/imgs/draculaura.png", 
+        id: 2 
+    },
+    { 
+        nome: "Clawdeen Wolf", 
+        motivo: "Você é direta, leal e não precisa da aprovação de ninguém. Sabe exatamente quem é e não abre mão disso por nada.", 
+        imagem: "../assets/imgs/clawdeen.png",
+        id: 3 
+    },
+    { 
+        nome: "Cleo de Nile", 
+        motivo: "Você tem presença natural e age com estratégia. Por trás da postura firme existe alguém extremamente comprometida com o que acredita.", 
+        imagem: "../assets/imgs/cleo.png", 
+        id: 4 
+    },
+    { 
+        nome: "Lagoona Blue", 
+        motivo: "Você tem uma calma que contagia tudo ao redor. Flui com o que a vida traz sem perder a essência e encontra equilíbrio onde os outros veem caos.", 
+        imagem: "../assets/imgs/lagoona.png", 
+        id: 5 
+    },
+    { 
+        nome: "Ghoulia Yelps", 
+        motivo: "Você processa tudo com profundidade antes de agir. Sua inteligência e lealdade fazem de você alguém raro e indispensável.", 
+        imagem: "../assets/imgs/gholia.png", 
+        id: 6 
+    }
+];
+
+// ============================================================
+// PERGUNTAS DO QUIZ
+// Cada pergunta tem: pergunta, descricao e 6 opcoes
+// A ordem das opcoes sempre segue: Frankie, Draculaura,
+// Clawdeen, Cleo, Lagoona, Ghoulia (índices 0 a 5)
+// ============================================================
+const perguntas = [
+    {
+        pergunta: "Você esqueceu completamente de um trabalho em grupo e a entrega é amanhã. O que você faz?",
+        descricao: "A pressão revela muito sobre como você age.",
+        opcoes: [
+            "Entra em contato com todo mundo agora, admite que esqueceu e propõe resolver na madrugada se precisar",
+            "Fica super mal, pede desculpa mil vezes e tenta compensar fazendo a parte mais chata",
+            "Assume a liderança, divide as tarefas e garante que vai ficar bom mesmo com pouco tempo",
+            "Delega tudo com precisão, já calculou o que dá pra fazer e garante que a nota não vai cair",
+            "Fala com calma para o grupo, sem drama, e sugere o que ainda dá pra fazer com o tempo que sobrou",
+            "Já abriu o documento, montou um cronograma e está distribuindo tarefas por eficiência"
+        ]
+    },
+    {
+        pergunta: "Você vai a uma festa que não estava esperando nada e acaba sendo incrível. Como você reage?",
+        descricao: "O que você faz quando a vida te surpreende bem?",
+        opcoes: [
+            "Fica animada com tudo, tenta participar de cada coisa e acaba se envolvendo em alguma confusão sem querer",
+            "Fica encantada com o clima, faz amizade com todo mundo e sai de lá com pelo menos um novo crush",
+            "Aproveita cada segundo, vira o centro das atenções sem nem perceber e volta pra casa cheia de energia",
+            "Já sabia que ia ser bom — você tem um faro pra isso — e aproveita com elegância",
+            "Curtiu bastante mas no seu ritmo, conversando com poucas pessoas de forma mais profunda",
+            "Ficou observando tudo com curiosidade, foi seletiva com quem falou e aproveitou do jeito dela"
+        ]
+    },
+    {
+        pergunta: "Uma amiga sua está passando por um momento difícil mas finge que está tudo bem. O que você faz?",
+        descricao: "Como você age quando percebe que algo não está certo?",
+        opcoes: [
+            "Tenta ajudar diretamente mesmo sem saber muito como — às vezes atrapalha mais, mas a intenção é boa",
+            "Percebe na hora, chega pertinho, não força e fica disponível até ela querer falar",
+            "Fala diretamente que percebeu e que pode contar — sem enrolação, sem julgamento",
+            "Dá o espaço que ela precisa mas deixa claro que quando quiser, você está lá",
+            "Fica por perto com leveza, sem pressionar, e espera ela chegar quando estiver pronta",
+            "Nota os padrões de comportamento, pesquisa formas de ajudar e age de forma cuidadosa e discreta"
+        ]
+    },
+    {
+        pergunta: "Você precisa tomar uma decisão importante e não tem tempo pra pensar muito. O que você faz?",
+        descricao: "Sob pressão, o instinto fala mais alto.",
+        opcoes: [
+            "Vai de instinto e lida com as consequências depois — às vezes dá certo, às vezes não",
+            "Pensa em como cada escolha vai afetar as pessoas ao redor antes de decidir",
+            "Decide rápido com base no que sente ser certo e assume a responsabilidade sem hesitar",
+            "Avalia o que traz mais vantagem a longo prazo e age com convicção",
+            "Respira, confia no processo e escolhe o que parecer mais equilibrado",
+            "Processa as variáveis disponíveis em segundos e escolhe a opção mais lógica"
+        ]
+    },
+    {
+        pergunta: "Você discorda de algo que o professor falou na frente da turma toda. O que você faz?",
+        descricao: "Nem sempre é fácil se posicionar.",
+        opcoes: [
+            "Fala na hora sem filtro e depois fica pensando si foi a melhor ideia",
+            "Fica quieta na hora mas comenta com amigas depois — não gosta de criar clima",
+            "Levanta a mão e discorda com confiança, respeitosamente mas sem papas na língua",
+            "Espera o momento certo, coloca o ponto de vista com autoridade e embasamento",
+            "Prefere conversar depois em particular — evita confronto público desnecessário",
+            "Anota a contradição, pesquisa depois e manda a fonte por mensagem pro professor"
+        ]
+    },
+    {
+        pergunta: "Seu grupo vai escolher um filme pra assistir junto e ninguém entra em acordo. O que você faz?",
+        descricao: "Pequenas decisões revelam grandes personalidades.",
+        opcoes: [
+            "Sugere um que você acha que todo mundo vai curtir e fica animada independente do que escolherem",
+            "Quer um filme com uma boa história e tenta convencer o grupo com entusiasmo",
+            "Bota pra voltar, respeita o resultado mas já deixou claro qual é a sua opinião",
+            "Você decide. Você sempre sabe o que vai ser melhor pra todo mundo",
+            "Ceder fácil — o que importa é estar junto, não qual filme",
+            "Faz uma análise rápida das notas e reviews e apresenta a melhor opção com dados"
+        ]
+    },
+    {
+        pergunta: "Você acorda super tarde num dia cheio de compromissos. Como você lida?",
+        descricao: "O caos matinal é um teste de caráter.",
+        opcoes: [
+            "Entra em pânico, tenta fazer tudo ao mesmo tempo e acaba esquecendo alguma coisa no caminho",
+            "Fica angustiada e manda mensagem pedindo desculpa antecipado pra todo mundo",
+            "Prioriza o que é essencial, corta o que dá pra cortar e chega com presença mesmo que atrasada",
+            "Já tinha um plano B — isso não te pega tão desprevenida quanto parece",
+            "Aceita que vai atrasar, avisa todo mundo com calma e segue o dia sem catastrofizar",
+            "Reorganiza mentalmente toda a agenda em segundos e executa com eficiência máxima"
+        ]
+    },
+    {
+        pergunta: "Alguém fala mal de você pelas costas e chega no seu ouvido. Como você reage?",
+        descricao: "O que você faz quando se sente traída?",
+        opcoes: [
+            "Fica chateada, não entende o porquê e tenta ir falar com a pessoa diretamente",
+            "Fica magoada de verdade — você valoriza muito as relações e isso dói",
+            "Confronta na hora, olho no olho, sem rodeios",
+            "Ignora com distância calculada — sua postura já diz mais do que qualquer resposta",
+            "Tenta entender o que gerou isso antes de agir — talvez tenha algo que ela não viu",
+            "Não reage por impulso — observa, analisa e decide se vale a pena gastar energia com isso"
+        ]
+    },
+    {
+        pergunta: "Você tem uma semana livre sem obrigações. O que você faz?",
+        descricao: "O tempo livre diz muito sobre quem você é.",
+        opcoes: [
+            "Tenta um monte de coisa nova que sempre quis fazer e acaba não terminando nenhuma",
+            "Programa um rolê especial, assiste séries e cuida de si mesma com carinho",
+            "Aproveita cada dia ao máximo, com planos mas com espaço pra improvisar",
+            "Usa o tempo pra se cuidar, se organizar e voltar melhor do que estava",
+            "Descansa de verdade, vai pra natureza e recarrega sem culpa",
+            "Mergulha em um projeto pessoal ou assunto que estava querendo estudar faz tempo"
+        ]
+    },
+    {
+        pergunta: "Você recebe uma crítica sobre algo que fez com muito esforço. Como você lida?",
+        descricao: "Receber crítica é uma arte.",
+        opcoes: [
+            "Fica na defensiva no primeiro segundo, mas logo tenta absorver o que é válido",
+            "Sente bastante, precisa de um tempo pra processar antes de ver o lado construtivo",
+            "Ouve, filtra o que presta e descarta o que é frescura — sem drama",
+            "Avalia se a fonte tem credibilidade antes de levar a sério",
+            "Recebe com abertura, agradece e reflete com tranquilidade",
+            "Analisa cada ponto com frieza e separa o que é dado útil do que é opinião"
+        ]
+    },
+    // {
+    //     pergunta: "Você precisa apresentar algo na frente de muita gente. Como você se sente?",
+    //     descricao: "O holofote pode ser amigo ou inimigo.",
+    //     opcoes: [
+    //         "Nervosa mas animada — pode dar qualquer coisa mas você vai de cabeça mesmo assim",
+    //         "Ansiosa, mas usa isso pra caprichar no que vai falar e em como vai se apresentar",
+    //         "Confortável — você gosta de ser vista e isso não te intimida",
+    //         "No elemento — você nasceu pra isso",
+    //         "Um pouco desconfortável com o holofote, mas se sai bem porque se preparou",
+    //         "Foca no conteúdo — se o material for sólido, a apresentação vai bem por consequência"
+    //     ]
+    // },
+    // {
+    //     pergunta: "Você e uma amiga têm opiniões completamente opostas sobre algo importante. O que acontece?",
+    //     descricao: "Desentendimentos revelam como você se relaciona.",
+    //     opcoes: [
+    //         "Tenta entender o lado dela mesmo sem concordar — a amizade vem antes",
+    //         "Fica preocupada que o desentendimento afete a relação e tenta chegar num meio-termo",
+    //         "Debate com energia, defende o ponto de vista e respeita se não chegar a acordo",
+    //         "Argumenta com convicção — mas sabe quando a conversa não vai a lugar nenhum e encerra",
+    //         "Ouve com atenção real, não força a barra e deixa cada uma com a sua visão",
+    //         "Apresenta os argumentos com lógica — não é pessoal, é racional"
+    //     ]
+    // },
+    // {
+    //     pergunta: "Você está num lugar novo, sem conhecer ninguém. O que você faz?",
+    //     descricao: "O desconhecido pode ser desconfortável ou estimulante.",
+    //     opcoes: [
+    //         "Tenta puxar papo com alguém perto, mesmo que fique um pouco sem jeito no começo",
+    //         "Fica mais na dela mas sorri pro mundo — espera alguém se aproximar",
+    //         "Age natural, não se intimida e logo está no meio de uma roda de gente",
+    //         "Entra com postura, faz contato visual e escolhe com quem quer interagir",
+    //         "Observa o ambiente, escolhe um canto confortável e deixa as conexões acontecerem",
+    //         "Mapeia o espaço, identifica quem parece mais interessante e se aproxima quando faz sentido"
+    //     ]
+    // },
+    // {
+    //     pergunta: "Algo dá muito errado num plano que você tinha. Qual é sua primeira reação?",
+    //     descricao: "Planos falham. O que importa é o que vem depois.",
+    //     opcoes: [
+    //         "Frustra um pouco, mas logo tenta improvisar uma solução — mesmo que ela seja caótica",
+    //         "Fica chateada, precisa de um momento, mas não deixa que isso defina o dia",
+    //         "Adapta rapidamente, sem ficar lamentando o que não deu certo",
+    //         "Já tinha considerado essa possibilidade e tem pelo menos uma alternativa na manga",
+    //         "Aceita que nem tudo sai como planejado e redireciona com serenidade",
+    //         "Identifica exatamente o que falhou, corrige e segue — sem perder tempo com emoção"
+    //     ]
+    // },
+    // {
+    //     pergunta: "No final do dia, o que te faz sentir que o dia valeu?",
+    //     descricao: "O que você valoriza diz tudo sobre quem você é.",
+    //     opcoes: [
+    //         "Ter tentado algo diferente, mesmo que não tenha saído perfeito",
+    //         "Ter se conectado de verdade com alguém",
+    //         "Ter sido completamente você mesma, sem filtro",
+    //         "Ter conquistado ou avançado em algo que importa pra você",
+    //         "Ter vivido com leveza e sem arrependimentos",
+    //         "Ter aprendido ou resolvido algo que estava te incomodando"
+    //     ]
+    // }
+];
+
+let atual = 0;
+let respostas = [];
+
+// Mapeando os elementos do HTML que vamos manipular
+const elPergunta  = document.getElementById("pergunta");
+const elDescricao = document.getElementById("descricao");
+const elOpcoes    = document.getElementById("opcoes");
+const elResultado = document.getElementById("resultado");
+const btnProx     = document.getElementById("btnProx");
+const btnReiniciar = document.getElementById("btnReiniciar");
+
+// ============================================================
+// FUNÇÃO: carregar()
+// Exibe a pergunta atual na tela com suas opções
+// ============================================================
+function carregar() {
+    let questao = perguntas[atual];
+    elPergunta.innerHTML  = `<h3>${questao.pergunta}</h3>`;
+    elDescricao.innerHTML = `<p>${questao.descricao}</p>`;
+    elOpcoes.innerHTML    = "";
+    
+    questao.opcoes.forEach((texto, index) => {
+        elOpcoes.innerHTML += `
+            <label class="opcao-label">
+                <input type="radio" name="opt" value="${index}"> ${texto}
+            </label><br>
+        `;
+    });
+}
+
+// ============================================================
+// FUNÇÃO: proxima()
+// Verifica se o usuário escolheu uma opção e avança
+// ============================================================
+function proxima() {
+    let opcoesRadio = document.getElementsByName("opt");
+    let escolhido = -1;
+    
+    for (let i = 0; i < opcoesRadio.length; i++) {
+        if (opcoesRadio[i].checked) {
+            escolhido = parseInt(opcoesRadio[i].value);
+        }
+    }
+    
+    if (escolhido === -1) {
+        alert("Escolha uma opção para continuar!");
+        return;
+    }
+    
+    respostas.push(escolhido);
+    atual++;
+    
+    if (atual < perguntas.length) {
+        carregar();
+    } else {
+        finalizar();
+    }
+}
+
+// ============================================================
+// FUNÇÃO: finalizar()
+// Conta os votos, mostra o resultado e salva no banco
+// ============================================================
+async function finalizar() {
+
+    // 1. Limpa a tela para mostrar o resultado
+    elPergunta.innerHTML = "<h2>Sua personagem Monster High é...</h2>";
+    elDescricao.innerHTML = "";
+    elOpcoes.innerHTML = "";
+    btnProx.style.display = "none";
+    btnReiniciar.style.display = "inline-block";
+
+    // 2. Zera os votos de cada personagem
+    let votosFrankie    = 0;
+    let votosDraculaura = 0;
+    let votosClawdeen   = 0;
+    let votosCleo       = 0;
+    let votosLagoona    = 0;
+    let votosGhoulia    = 0;
+
+    // 3. Percorre todas as respostas e soma os votos
+    // Índice 0 = Frankie, 1 = Draculaura, 2 = Clawdeen,
+    // 3 = Cleo, 4 = Lagoona, 5 = Ghoulia
+    for (let i = 0; i < respostas.length; i++) {
+        let votoAtual = respostas[i];
+
+        if (votoAtual == 0)      { votosFrankie++;    }
+        else if (votoAtual == 1) { votosDraculaura++; }
+        else if (votoAtual == 2) { votosClawdeen++;   }
+        else if (votoAtual == 3) { votosCleo++;       }
+        else if (votoAtual == 4) { votosLagoona++;    }
+        else if (votoAtual == 5) { votosGhoulia++;    }
+    }
+
+    // 4. Descobre a personagem VENCEDORA (mais votos)
+    let numeroSecoVencedor = votosFrankie;
+    let personagemVencedora = personagensInfo[0];
+
+    if (votosDraculaura > numeroSecoVencedor) { numeroSecoVencedor = votosDraculaura; personagemVencedora = personagensInfo[1]; }
+    if (votosClawdeen   > numeroSecoVencedor) { numeroSecoVencedor = votosClawdeen;   personagemVencedora = personagensInfo[2]; }
+    if (votosCleo       > numeroSecoVencedor) { numeroSecoVencedor = votosCleo;       personagemVencedora = personagensInfo[3]; }
+    if (votosLagoona    > numeroSecoVencedor) { numeroSecoVencedor = votosLagoona;    personagemVencedora = personagensInfo[4]; }
+    if (votosGhoulia    > numeroSecoVencedor) { numeroSecoVencedor = votosGhoulia;    personagemVencedora = personagensInfo[5]; }
+
+    // 5. NOVO: Descobre a personagem PERDEDORA (menos votos)
+    // Começa achando que a Frankie tem menos votos e vai comparando
+    let numeroSecoPerdedor = votosFrankie;
+    let personagemPerdedora = personagensInfo[0];
+
+    if (votosDraculaura < numeroSecoPerdedor) { numeroSecoPerdedor = votosDraculaura; personagemPerdedora = personagensInfo[1]; }
+    if (votosClawdeen   < numeroSecoPerdedor) { numeroSecoPerdedor = votosClawdeen;   personagemPerdedora = personagensInfo[2]; }
+    if (votosCleo       < numeroSecoPerdedor) { numeroSecoPerdedor = votosCleo;       personagemPerdedora = personagensInfo[3]; }
+    if (votosLagoona    < numeroSecoPerdedor) { numeroSecoPerdedor = votosLagoona;    personagemPerdedora = personagensInfo[4]; }
+    if (votosGhoulia    < numeroSecoPerdedor) { numeroSecoPerdedor = votosGhoulia;    personagemPerdedora = personagensInfo[5]; }
+
+    // 6. Mostra o resultado na tela
+    elResultado.innerHTML = `
+        <div style="text-align: center; margin-top: 20px;">
+            <img src="${personagemVencedora.imagem}" style="width: 220px; border-radius: 15px; margin-bottom: 15px;">
+            <br>
+            <h2 style="color: #e6007e;">${personagemVencedora.nome}</h2>
+            <p>${personagemVencedora.motivo}</p>
+            <strong style="color: #00ccff;">Pontuação final: Você escolheu as opções dela ${numeroSecoVencedor} vezes!</strong>
+        </div>
+    `;
+
+    // 7. Pega o ID do usuário logado no localStorage
+    let idUsuario = localStorage.getItem("idUsuario");
+
+    try {
+        // 8. PRIMEIRO fetch: salva o resultado principal no banco (personagem vencedora)
+        let respostaResultado = await fetch("/resultadoquiz/cadastrar", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                porcentagemFinal: numeroSecoVencedor,
+                dataResultado: new Date().toISOString().slice(0, 19).replace('T', ' '),
+                fkUsuario: idUsuario,
+                fkPersonagem: personagemVencedora.id
+            })
+        });
+
+        if (respostaResultado.ok) {
+            console.log("Resultado salvo com sucesso!");
+
+            // 9. Pega o ID do resultado que acabou de ser inserido no banco
+            // O MySQL retorna "insertId" com o id gerado automaticamente
+            let dadosResultado = await respostaResultado.json();
+            let idResultadoSalvo = dadosResultado.insertId;
+
+            // 10. SEGUNDO fetch: salva o placar completo de votos de cada personagem
+            // Isso é o que vai alimentar o card VERMELHO do dashboard (menos votada)
+            let respostaPlacar = await fetch("/placarquiz/cadastrar", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    votosFrankie:    votosFrankie,
+                    votosDraculaura: votosDraculaura,
+                    votosClawdeen:   votosClawdeen,
+                    votosCleo:       votosCleo,
+                    votosLagoona:    votosLagoona,
+                    votosGhoulia:    votosGhoulia,
+                    fkUsuario:       idUsuario,
+                    fkResultadoQuiz: idResultadoSalvo  // Liga o placar ao resultado
+                })
+            });
+
+            if (respostaPlacar.ok) {
+                console.log("Placar completo salvo com sucesso!");
+            } else {
+                console.error("Erro ao salvar o placar.");
+            }
+
+        } else {
+            console.error("O servidor respondeu com erro ao salvar o resultado.");
+        }
+
+    } catch (erro) {
+        console.error("Erro na requisição:", erro);
+    }
+
+    // 11. Aguarda 5 segundos mostrando o resultado e redireciona para o dashboard
+    setTimeout(function () {
+        window.location.href = "../dashboard/dashboard1.html";
+    }, 5000);
+}
+
+// ============================================================
+// FUNÇÃO: reiniciar()
+// Volta o quiz para o início
+// ============================================================
+function reiniciar() {
+    atual = 0;
+    respostas = [];
+    elResultado.innerHTML = "";
+    btnReiniciar.style.display = "none";
+    btnProx.style.display = "inline-block";
+    carregar();
+}
+
+// Inicializa o quiz assim que a página carrega
+carregar();
+</script>
+</body>
+</html>

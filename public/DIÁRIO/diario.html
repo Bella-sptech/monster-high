@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="../css/stylediario.css">
+
+    <title>Diario</title>
+</head>
+
+<body onload="chamar()">
+    
+    <header class="cabeçalho">
+
+        <img class="imagens-log"
+        src="../assets/imgs/logomoster_high,sem fundo.png">
+
+        <nav class="menu">
+            <a class="menu-item" href="../index.html">Início</a>
+            <a class="menu-item" href="">Sobre</a>
+            <a class="menu-item" href="">Personagens</a>
+            <a class="menu-item" href="./QUIZ/quiz.html">Quiz</a>
+        </nav>
+
+    </header>
+
+    <main class="conteudo-principal">
+
+        <!-- BLOCO ESCREVER -->
+        <div class="diario">
+
+            <h2>ESCREVA SEU DIARIO</h2>
+
+            <input type="text" placeholder="Título do diário" id="ipt_titulo_diario_">
+            <textarea
+            id="ipt_caixa_texto"
+            placeholder="O que vai na sua mente hoje...?">
+            </textarea>
+
+            <button onclick="salvar()">
+                SALVAR DIARIO
+            </button>
+
+        </div>
+
+        <!-- HISTORICO -->
+        <div class="historico">
+
+            <h3>SEUS DIARIOS</h3>
+
+            <div class="lista-historico"></div>
+
+        </div>
+
+    </main>
+
+</body>
+</html>
+
+<script>
+
+// ============================================
+// SALVAR: chamada ao clicar no botão "Salvar Diário"
+// ============================================
+function salvar() {
+    // Pega os valores que o usuário digitou nos campos
+    var titulo   = document.getElementById("ipt_titulo_diario_").value;
+    var anotacao = document.getElementById("ipt_caixa_texto").value;
+
+    // Validação: não deixa salvar se estiver vazio
+    if (anotacao == "" || titulo == "") {
+        alert("Preencha o título e o texto antes de salvar!");
+        return; // para a função aqui
+    }
+
+    // Envia os dados para o back-end via fetch
+    // POST = está enviando dados novos para salvar
+    fetch("http://localhost:3333/diario/cadastrar", {
+        method: "POST",
+
+        // Avisa o back que está mandando um JSON
+        headers: { "Content-Type": "application/json" },
+
+        // Converte os dados para JSON e envia no corpo da requisição
+        // ⚠️ troca o fkUsuario: 1 pelo ID real do usuário logado na sessão
+        body: JSON.stringify({ titulo: titulo, anotacao: anotacao, fkUsuario: 1 })
+    })
+    .then(function(resposta) {
+        // Deu certo: limpa os campos e recarrega a lista
+        if (resposta.status == 201) {
+            alert("Diário salvo com sucesso!");
+            ipt_titulo_diario_.value = "";
+            ipt_caixa_texto.value    = "";
+            chamar(); // atualiza a lista na tela
+        } else {
+            alert("Erro ao salvar o diário!");
+        }
+    })
+    .catch(function(erro) {
+        // Erro de conexão: back não está rodando, URL errada, etc
+        console.log("Erro na requisição: ", erro);
+        alert("Não foi possível conectar ao servidor!");
+    });
+}
+
+// ============================================
+// CHAMAR: executada automaticamente quando a página carrega (onload)
+// Busca todos os diários salvos no banco e exibe na tela
+// ============================================
+function chamar() {
+
+    // GET = está buscando dados do banco
+    // ⚠️ troca o /1 pelo ID real do usuário logado na sessão
+    fetch("http://localhost:3333/diario/listar/1")
+
+    .then(function(resposta) {
+
+        // Se não tem nenhuma entrada ainda (204 = sem conteúdo)
+        if (resposta.status == 204) {
+            console.log("Nenhuma entrada encontrada.");
+            return null; // para aqui sem tentar ler o JSON
+        }
+
+        // Converte a resposta para JSON para poder usar os dados
+        return resposta.json();
+    })
+
+    .then(function(entradas) {
+        // Se não veio nada, não faz nada
+        if (!entradas) return;
+
+        // Pega o elemento da lista no HTML
+        var listaHistorico = document.querySelector(".lista-historico");
+
+        // Limpa a lista antes de renderizar (evita duplicatas)
+        listaHistorico.innerHTML = "";
+
+        // Percorre cada entrada e cria um card na tela
+        entradas.forEach(function(entrada) {
+            var card = document.createElement("div");
+            card.classList.add("card-historico");
+
+            // Formata a data para o padrão brasileiro
+            var dataFormatada = new Date(entrada.dataAnotacao)
+                .toLocaleDateString("pt-br");
+
+            // Monta o HTML do card com os dados vindos do banco
+            card.innerHTML = `
+                <h4>${entrada.titulo}</h4>
+                <p>${entrada.anotacao}</p>
+                <small>Postado em: ${dataFormatada}</small>
+            `;
+
+            // Adiciona o card no topo da lista
+            listaHistorico.prepend(card);
+        });
+    })
+
+    .catch(function(erro) {
+        console.log("Erro ao carregar diários: ", erro);
+    });
+}
+
+</script>
+
+<!-- <script>
+
+function salvar(){
+    var texto = ipt_caixa_texto.value;
+    var titulo = ipt_titulo_diario_.value;
+
+    var listaHistorico =
+    document.querySelector(".lista-historico");
+
+    if(texto == ""){
+    alert("Escreva algo primeiro ");
+    } else { 
+        var novoCard =
+        document.createElement("div");
+
+        novoCard.classList.add("card-historico");
+
+        novoCard.innerHTML = `
+            <p>${texto}</p>
+            <small>Postado agora </small>
+        `;
+        listaHistorico.prepend(novoCard);
+        ipt_caixa_texto.value = "";
+    }
+    fetch()
+}
+
+function chamar(){
+    console.log("Página carregada");
+}
+
+</script> -->
