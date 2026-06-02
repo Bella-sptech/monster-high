@@ -41,7 +41,6 @@
             </div>
 
             <!-- ===== KPIs ===== -->
-            <!-- Cada card mostra uma informação diferente do usuário logado -->
             <div class="box-info">
 
                 <!-- CARD VERMELHO: mostra o personagem menos votado pelo usuário no último quiz -->
@@ -49,7 +48,7 @@
                 <div style="background-color: rgba(216, 13, 13, 0.459); border-color: red; color: #7A1A1A;"
                     class="box-info-single" id="kpi-vermelho">
                     <div class="info-text">
-                        <!-- Começa com "Carregando..." e o JS substitui quando a resposta chegar -->
+                        <!-- Começa com "Carregando" e o JS substitui quando a resposta chegar -->
                         <p>Carregando...</p>
                     </div>
                 </div>
@@ -59,17 +58,17 @@
                 <div style="background-color: rgba(255, 238, 0, 0.301); border-color: yellow; color: #5A4A00"
                     class="box-info-single" id="kpi-amarelo">
                     <div class="info-text">
-                        <!-- Começa com "Carregando..." e o JS substitui quando a resposta chegar -->
+                        <!-- Começa com "Carregando" e o JS substitui quando a resposta chegar -->
                         <p>Carregando...</p>
                     </div>
                 </div>
 
                 <!-- CARD VERDE: mostra o resultado mais recente do quiz do usuário -->
-                <!-- O id="resultado-quiz" é usado pelo JavaScript para preencher esse card -->
+                <!-- O id="resultado-quiz" é usado pelo js para preencher esse card -->
                 <div style="background-color: rgba(20, 252, 32, 0.658); border-color: green; color: #1A4d1A;"
                     class="box-info-single" id="resultado-quiz">
                     <div class="info-text">
-                        <!-- Começa com "Carregando..." e o JS substitui quando a resposta chegar -->
+                        <!-- Começa com "Carregando" e o dps JS substitui quando a resposta chegar -->
                         <p>Carregando resultado...</p>
                     </div>
                 </div>
@@ -96,16 +95,10 @@
 </html>
 <script>
 
-    // ============================================================
-    // CARD VERDE: busca o último resultado do quiz do usuário
-    // Chama a rota GET /resultadoquiz/buscar/:idUsuario no backend
-    // ============================================================
     async function carregarResultadoQuiz() {
 
-        // Pega o ID do usuário que foi salvo no localStorage durante o login
         let idUsuario = localStorage.getItem("idUsuario");
 
-        // Se não tiver usuário logado, mostra mensagem e para aqui
         if (!idUsuario) {
             document.getElementById("resultado-quiz").innerHTML = `
                 <div class="info-text"><p>Faça login para ver seu resultado.</p></div>`;
@@ -113,20 +106,16 @@
         }
 
         try {
-            // Faz a requisição para o backend passando o ID do usuário na URL
             let resposta = await fetch(`/resultadoquiz/buscar/${idUsuario}`);
 
-            // Status 204 significa que o servidor respondeu mas não encontrou nada
             if (resposta.status === 204) {
                 document.getElementById("resultado-quiz").innerHTML = `
                     <div class="info-text"><p>Você ainda não fez o quiz!</p></div>`;
                 return;
             }
 
-            // Converte a resposta para JSON para poder usar os dados
             let dados = await resposta.json();
 
-            // Preenche o card verde com os dados que vieram do banco
             document.getElementById("resultado-quiz").innerHTML = `
                 <div class="info-text">
                     <h3>${dados.nomPersonagem}</h3>
@@ -141,20 +130,12 @@
         }
     }
 
-    // Chama a função assim que a página carrega
     carregarResultadoQuiz();
 
-
-    // ============================================================
-    // CARD AMARELO: conta quantas vezes o usuário fez o quiz
-    // Chama a rota GET /resultadoquiz/contar/:idUsuario no backend
-    // ============================================================
     async function carregarContagem() {
 
-        // Pega o ID do usuário que foi salvo no localStorage durante o login
         let idUsuario = localStorage.getItem("idUsuario");
 
-        // Se não tiver usuário logado, mostra mensagem e para aqui
         if (!idUsuario) {
             document.getElementById("kpi-amarelo").innerHTML = `
                 <div class="info-text"><p>Faça login.</p></div>`;
@@ -162,13 +143,10 @@
         }
 
         try {
-            // Faz a requisição para o backend passando o ID do usuário na URL
             let resposta = await fetch(`/resultadoquiz/contar/${idUsuario}`);
 
-            // Converte a resposta para JSON
             let dados = await resposta.json();
 
-            // Preenche o card amarelo com o total de vezes que fez o quiz
             document.getElementById("kpi-amarelo").innerHTML = `
                 <div class="info-text">
                     <h3>${dados.total}x</h3>
@@ -182,20 +160,13 @@
         }
     }
 
-    // Chama a função assim que a página carrega
     carregarContagem();
 
 
-    // ============================================================
-    // CARD VERMELHO: busca o placar completo e mostra a personagem menos votada
-    // Chama a rota GET /placarquiz/buscar/:idUsuario no backend
-    // ============================================================
     async function carregarPerdedora() {
 
-        // Pega o ID do usuário que foi salvo no localStorage durante o login
         let idUsuario = localStorage.getItem("idUsuario");
 
-        // Se não tiver usuário logado, mostra mensagem e para aqui
         if (!idUsuario) {
             document.getElementById("kpi-vermelho").innerHTML = `
                 <div class="info-text"><p>Faça login.</p></div>`;
@@ -203,21 +174,16 @@
         }
 
         try {
-            // Faz a requisição para o backend passando o ID do usuário na URL
             let resposta = await fetch(`/placarquiz/buscar/${idUsuario}`);
 
-            // Status 204 significa que não encontrou placar para esse usuário
             if (resposta.status === 204) {
                 document.getElementById("kpi-vermelho").innerHTML = `
                     <div class="info-text"><p>Faça o quiz primeiro!</p></div>`;
                 return;
             }
 
-            // Converte a resposta para JSON
             let dados = await resposta.json();
 
-            // Monta um array com os votos de cada personagem
-            // para poder comparar e achar quem teve menos votos
             let placar = [
                 { nome: "Frankie Stein",  votos: dados.votosFrankie    },
                 { nome: "Draculaura",     votos: dados.votosDraculaura },
@@ -227,8 +193,6 @@
                 { nome: "Ghoulia Yelps",  votos: dados.votosGhoulia    }
             ];
 
-            // Começa achando que a primeira (Frankie) tem menos votos
-            // e vai comparando com as outras — se alguma tiver menos, ela vira a perdedora
             let perdedora = placar[0];
             for (let i = 1; i < placar.length; i++) {
                 if (placar[i].votos < perdedora.votos) {
@@ -236,7 +200,6 @@
                 }
             }
 
-            // Preenche o card vermelho com a personagem menos votada
             document.getElementById("kpi-vermelho").innerHTML = `
                 <div class="info-text">
                     <h3>${perdedora.nome}</h3>
@@ -251,21 +214,10 @@
         }
     }
 
-    // Chama a função assim que a página carrega
     carregarPerdedora();
 
 
-    // ============================================================
-    // GRÁFICO DE BARRAS
-    // Por enquanto com dados fixos — futuramente virá do banco
-    // ============================================================
-
-    // Pega o elemento canvas onde o gráfico vai ser desenhado
-   // ============================================================
-// GRÁFICO DE BARRAS: mostra os votos de cada personagem
-// Usa os mesmos dados do placar que já buscamos antes
-// Chama a rota GET /placarquiz/buscar/:idUsuario no backend
-// ============================================================
+    
 async function carregarGrafico() {
     try {
         let idUsuario = localStorage.getItem("idUsuario");
@@ -307,7 +259,6 @@ async function carregarGrafico() {
         });
 
     } catch (erro) {
-        // Mostra o erro exato no console para debug
         console.error("Erro ao carregar gráfico:", erro);
     }
 }
