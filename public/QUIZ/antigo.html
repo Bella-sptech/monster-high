@@ -277,7 +277,6 @@ const perguntas = [
 let atual = 0;
 let respostas = [];
 
-// Elementos do DOM mapeados de forma limpa
 const elPergunta = document.getElementById("pergunta");
 const elDescricao = document.getElementById("descricao");
 const elOpcoes = document.getElementById("opcoes");
@@ -360,9 +359,9 @@ async function finalizar() {
         }
     }
 
-    // 4. Descobre qual personagem teve a maior quantidade de votos usando IFs
-    let numeroSecoVencedor = votosFrankie; // Começamos achando que foi a Frankie
-    let personagemVencedora = personagensInfo[0]; // Índice 0 é a Frankie
+    //  Descobre qual personagem teve a maior quantidade de votos usando IF de comparalão
+    let numeroSecoVencedor = votosFrankie;
+    let personagemVencedora = personagensInfo[0]; 
 
     if (votosDraculaura > numeroSecoVencedor) {
         numeroSecoVencedor = votosDraculaura;
@@ -385,7 +384,7 @@ async function finalizar() {
         personagemVencedora = personagensInfo[5];
     }
 
-    // 5. Coloca a foto e o texto na tela usando a personagem que ganhou
+    // Coloca a foto e o texto na tela usando a personagem que ganhou
     elResultado.innerHTML = `
         <div style="text-align: center; margin-top: 20px;">
             <img src="${personagemVencedora.imagem}" style="width: 220x; border-radius: 15px; margin-bottom: 15px;">
@@ -396,10 +395,10 @@ async function finalizar() {
         </div>
     `;
 
-    // 6. Pega o ID do usuário que está logado no navegador
+    //  Pega o ID do usuário que está logado 
     let idUsuario = localStorage.getItem("idUsuario");
 
-    // 7. Envia os dados para o banco usando async/await de forma limpa
+    // Envia os dados para o banco
     try {
         let resposta = await fetch("/resultadoquiz/cadastrar", {
             method: "POST",
@@ -407,8 +406,8 @@ async function finalizar() {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                porcentagemFinal: numeroSecoVencedor, // Enviando o número seco (Ex: 10)
-                dataResultado: new Date().toISOString().slice(0, 19).replace('T', ' '), // Formato DATETIME do MySQL
+                porcentagemFinal: numeroSecoVencedor, 
+                dataResultado: new Date().toISOString().slice(0, 19).replace('T', ' '), 
                 fkUsuario: idUsuario,
                 fkPersonagem: personagemVencedora.id
             })
