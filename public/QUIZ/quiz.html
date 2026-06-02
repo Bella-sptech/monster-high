@@ -46,11 +46,7 @@
 
 <script>
 
-// ============================================================
-// DADOS DOS PERSONAGENS
-// Cada personagem tem: nome, motivo (texto do resultado),
-// imagem (caminho da foto) e id (igual ao id no banco de dados)
-// ============================================================
+// Todos os dados do meu personagem 
 const personagensInfo = [
     { 
         nome: "Frankie Stein", 
@@ -89,13 +85,10 @@ const personagensInfo = [
         id: 6 
     }
 ];
+    
+// Perguntas do quiz
+/* a ordem das opcoes sempre segue: Frankie, Draculaura, Clawdeen, Cleo, Lagoona, Ghoulia, cada uma tem seu proprio indice*/
 
-// ============================================================
-// PERGUNTAS DO QUIZ
-// Cada pergunta tem: pergunta, descricao e 6 opcoes
-// A ordem das opcoes sempre segue: Frankie, Draculaura,
-// Clawdeen, Cleo, Lagoona, Ghoulia (índices 0 a 5)
-// ============================================================
 const perguntas = [
     {
         pergunta: "Você esqueceu completamente de um trabalho em grupo e a entrega é amanhã. O que você faz?",
@@ -282,7 +275,6 @@ const perguntas = [
 let atual = 0;
 let respostas = [];
 
-// Mapeando os elementos do HTML que vamos manipular
 const elPergunta  = document.getElementById("pergunta");
 const elDescricao = document.getElementById("descricao");
 const elOpcoes    = document.getElementById("opcoes");
@@ -290,10 +282,8 @@ const elResultado = document.getElementById("resultado");
 const btnProx     = document.getElementById("btnProx");
 const btnReiniciar = document.getElementById("btnReiniciar");
 
-// ============================================================
-// FUNÇÃO: carregar()
+
 // Exibe a pergunta atual na tela com suas opções
-// ============================================================
 function carregar() {
     let questao = perguntas[atual];
     elPergunta.innerHTML  = `<h3>${questao.pergunta}</h3>`;
@@ -309,10 +299,8 @@ function carregar() {
     });
 }
 
-// ============================================================
-// FUNÇÃO: proxima()
+
 // Verifica se o usuário escolheu uma opção e avança
-// ============================================================
 function proxima() {
     let opcoesRadio = document.getElementsByName("opt");
     let escolhido = -1;
@@ -338,20 +326,17 @@ function proxima() {
     }
 }
 
-// ============================================================
-// FUNÇÃO: finalizar()
 // Conta os votos, mostra o resultado e salva no banco
-// ============================================================
 async function finalizar() {
 
-    // 1. Limpa a tela para mostrar o resultado
+    //  Limpando a tela para mostrar o resultado
     elPergunta.innerHTML = "<h2>Sua personagem Monster High é...</h2>";
     elDescricao.innerHTML = "";
     elOpcoes.innerHTML = "";
     btnProx.style.display = "none";
     btnReiniciar.style.display = "inline-block";
 
-    // 2. Zera os votos de cada personagem
+    //  Zera os votos de cada personagem
     let votosFrankie    = 0;
     let votosDraculaura = 0;
     let votosClawdeen   = 0;
@@ -359,9 +344,7 @@ async function finalizar() {
     let votosLagoona    = 0;
     let votosGhoulia    = 0;
 
-    // 3. Percorre todas as respostas e soma os votos
-    // Índice 0 = Frankie, 1 = Draculaura, 2 = Clawdeen,
-    // 3 = Cleo, 4 = Lagoona, 5 = Ghoulia
+    // Percorre todas as respostas e soma os votos
     for (let i = 0; i < respostas.length; i++) {
         let votoAtual = respostas[i];
 
@@ -373,48 +356,48 @@ async function finalizar() {
         else if (votoAtual == 5) { votosGhoulia++;    }
     }
 
-    // 4. Descobre a personagem VENCEDORA (mais votos)
-    let numeroSecoVencedor = votosFrankie;
+    // Descobre quem teve mais voto
+    let qtdeVoto = votosFrankie;
     let personagemVencedora = personagensInfo[0];
 
-    if (votosDraculaura > numeroSecoVencedor) { numeroSecoVencedor = votosDraculaura; personagemVencedora = personagensInfo[1]; }
-    if (votosClawdeen   > numeroSecoVencedor) { numeroSecoVencedor = votosClawdeen;   personagemVencedora = personagensInfo[2]; }
-    if (votosCleo       > numeroSecoVencedor) { numeroSecoVencedor = votosCleo;       personagemVencedora = personagensInfo[3]; }
-    if (votosLagoona    > numeroSecoVencedor) { numeroSecoVencedor = votosLagoona;    personagemVencedora = personagensInfo[4]; }
-    if (votosGhoulia    > numeroSecoVencedor) { numeroSecoVencedor = votosGhoulia;    personagemVencedora = personagensInfo[5]; }
+    if (votosDraculaura > qtdeVoto) { qtdeVoto = votosDraculaura; personagemVencedora = personagensInfo[1]; }
+    if (votosClawdeen   > qtdeVoto) { qtdeVoto = votosClawdeen;   personagemVencedora = personagensInfo[2]; }
+    if (votosCleo       > qtdeVoto) { qtdeVoto = votosCleo;       personagemVencedora = personagensInfo[3]; }
+    if (votosLagoona    > qtdeVoto) { qtdeVoto = votosLagoona;    personagemVencedora = personagensInfo[4]; }
+    if (votosGhoulia    > qtdeVoto) { qtdeVoto = votosGhoulia;    personagemVencedora = personagensInfo[5]; }
 
-    // 5. NOVO: Descobre a personagem PERDEDORA (menos votos)
-    // Começa achando que a Frankie tem menos votos e vai comparando
-    let numeroSecoPerdedor = votosFrankie;
+
+    /*Descobre quem teve meno voto, começando pelo 0 e vai comparando*/
+    let qtdeVotoperdedora = votosFrankie;
     let personagemPerdedora = personagensInfo[0];
 
-    if (votosDraculaura < numeroSecoPerdedor) { numeroSecoPerdedor = votosDraculaura; personagemPerdedora = personagensInfo[1]; }
-    if (votosClawdeen   < numeroSecoPerdedor) { numeroSecoPerdedor = votosClawdeen;   personagemPerdedora = personagensInfo[2]; }
-    if (votosCleo       < numeroSecoPerdedor) { numeroSecoPerdedor = votosCleo;       personagemPerdedora = personagensInfo[3]; }
-    if (votosLagoona    < numeroSecoPerdedor) { numeroSecoPerdedor = votosLagoona;    personagemPerdedora = personagensInfo[4]; }
-    if (votosGhoulia    < numeroSecoPerdedor) { numeroSecoPerdedor = votosGhoulia;    personagemPerdedora = personagensInfo[5]; }
+    if (votosDraculaura < qtdeVotoperdedora) { qtdeVotoperdedora = votosDraculaura; personagemPerdedora = personagensInfo[1]; }
+    if (votosClawdeen   < qtdeVotoperdedora) { qtdeVotoperdedora = votosClawdeen;   personagemPerdedora = personagensInfo[2]; }
+    if (votosCleo       < qtdeVotoperdedora) { qtdeVotoperdedora = votosCleo;       personagemPerdedora = personagensInfo[3]; }
+    if (votosLagoona    < qtdeVotoperdedora) { qtdeVotoperdedora = votosLagoona;    personagemPerdedora = personagensInfo[4]; }
+    if (votosGhoulia    < qtdeVotoperdedora) { qtdeVotoperdedora = votosGhoulia;    personagemPerdedora = personagensInfo[5]; }
 
-    // 6. Mostra o resultado na tela
+    //  Mostra o resultado na tela
     elResultado.innerHTML = `
         <div style="text-align: center; margin-top: 20px;">
             <img src="${personagemVencedora.imagem}" style="width: 220px; border-radius: 15px; margin-bottom: 15px;">
             <br>
             <h2 style="color: #e6007e;">${personagemVencedora.nome}</h2>
             <p>${personagemVencedora.motivo}</p>
-            <strong style="color: #00ccff;">Pontuação final: Você escolheu as opções dela ${numeroSecoVencedor} vezes!</strong>
+            <strong style="color: #00ccff;">Pontuação final: Você escolheu as opções dela ${numeroDoVoto} vezes!</strong>
         </div>
     `;
 
-    // 7. Pega o ID do usuário logado no localStorage
+    //  Pega o ID do usuário logado no localStorage
     let idUsuario = localStorage.getItem("idUsuario");
 
     try {
-        // 8. PRIMEIRO fetch: salva o resultado principal no banco (personagem vencedora)
+        //  esse fetch ta salvando o resultado do quiz no banco
         let respostaResultado = await fetch("/resultadoquiz/cadastrar", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                porcentagemFinal: numeroSecoVencedor,
+                porcentagemFinal: numeroDoVoto,
                 dataResultado: new Date().toISOString().slice(0, 19).replace('T', ' '),
                 fkUsuario: idUsuario,
                 fkPersonagem: personagemVencedora.id
@@ -424,13 +407,11 @@ async function finalizar() {
         if (respostaResultado.ok) {
             console.log("Resultado salvo com sucesso!");
 
-            // 9. Pega o ID do resultado que acabou de ser inserido no banco
-            // O MySQL retorna "insertId" com o id gerado automaticamente
+
             let dadosResultado = await respostaResultado.json();
             let idResultadoSalvo = dadosResultado.insertId;
 
-            // 10. SEGUNDO fetch: salva o placar completo de votos de cada personagem
-            // Isso é o que vai alimentar o card VERMELHO do dashboard (menos votada)
+            // salva o placar completo de votos de cada personagem
             let respostaPlacar = await fetch("/placarquiz/cadastrar", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -442,7 +423,7 @@ async function finalizar() {
                     votosLagoona:    votosLagoona,
                     votosGhoulia:    votosGhoulia,
                     fkUsuario:       idUsuario,
-                    fkResultadoQuiz: idResultadoSalvo  // Liga o placar ao resultado
+                    fkResultadoQuiz: idResultadoSalvo  
                 })
             });
 
@@ -460,16 +441,13 @@ async function finalizar() {
         console.error("Erro na requisição:", erro);
     }
 
-    // 11. Aguarda 5 segundos mostrando o resultado e redireciona para o dashboard
+    // redireciona para o dashboard
     setTimeout(function () {
         window.location.href = "../dashboard/dashboard1.html";
     }, 5000);
 }
 
-// ============================================================
-// FUNÇÃO: reiniciar()
 // Volta o quiz para o início
-// ============================================================
 function reiniciar() {
     atual = 0;
     respostas = [];
